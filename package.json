@@ -1,0 +1,27 @@
+{
+    "name": "fullstackopen-part3",
+    "version": "0.0.1",
+    "description": "Part3 of the fullstackopen course 🐶",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "nodemon index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/BodomOW/fullstackopen-part3.git"
+    },
+    "author": "Marco Hernandez",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/BodomOW/fullstackopen-part3/issues"
+    },
+    "homepage": "https://github.com/BodomOW/fullstackopen-part3#readme",
+    "dependencies": {
+        "express": "^4.19.2"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.0"
+    }
+}
