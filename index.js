@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-app.use(express.json())
+const morgan = require('morgan')
 
 let persons = [
   {
@@ -24,6 +24,10 @@ let persons = [
     "number": "39-23-6423122"
   }
 ]
+
+app.use(express.json())
+
+app.use(morgan('tiny'))
 
 app.get('/api/persons', (request, response) => {
   response.json(persons)
@@ -63,7 +67,7 @@ app.post('/api/persons', (request, response) => {
 
   if (!body.name && !body.number) {
     return response.status(400).json({
-      error: 'content missing'
+      error: 'Content missing'
     })
   }
   if (!body.name && body.number) {
