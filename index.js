@@ -35,20 +35,36 @@ app.get('/api/persons', (request, response) => {
 
 app.get('/info', (request, response) => {
   const date = new Date()
-  const personsNum = persons.length
-  response.send(`Phonebook has info for ${personsNum} people <br /><br /> ${date}`)
+  Person.estimatedDocumentCount().then(personsNum => {
+    response.send(`Phonebook has info for ${personsNum} people <br /><br /> ${date}`)
+  })
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-  const id = Number(request.params.id)
-  const person = persons.find(p => p.id === id)
+  Person.findById(request.params.id).then(person => {
+    if (person) {
+      response.json(person)
+    } else {
+      response.statusMessage = "Person not found"
+      response.status(404).end()
+    }
+  })
+    .catch(error => next(error))
+})
 
-  if (person) {
-    response.json(person)
-  } else {
-    response.statusMessage = "Person not found"
-    response.status(404).end()
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
   }
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
