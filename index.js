@@ -39,7 +39,7 @@ app.get('/info', (request, response) => {
   response.send(`Phonebook has info for ${personsNum} people <br /><br /> ${date}`)
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   const id = Number(request.params.id)
   const person = persons.find(p => p.id === id)
 
@@ -59,7 +59,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
   console.log(body)
 
@@ -79,22 +79,39 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  // const nameDuplicated = persons.some(p => p.name === body.name)
+  let duplicatedItem = 0
 
-  // if (nameDuplicated) {
-  //   return response.status(409).json({
-  //     error: 'Name must be unique'
-  //   })
-  // }
+  const query = { name: body.name }
+  const update = { number: body.number }
 
-  const person = new Person({
-    name: body.name,
-    number: body.number,
-  })
+  Person.exists(query)
+    .then(response => {
+      if (response !== null) {
+        duplicatedItem = 1
+        console.log('duplicatedItem value: ', duplicatedItem)
+      }
+    })
+    .then(() => {
+      if (duplicatedItem === 1) {
+        console.log('Duplicated item!')
+        Person.findOneAndUpdate(query, update, { new: true })
+          .then(updatedPerson => {
+            response.json(updatedPerson)
+          })
+          .catch(error => next(error))
+      } else {
+        console.log('Item with 0 duplicates :)')
+        const person = new Person({
+          name: body.name,
+          number: body.number,
+        })
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+        person.save().then(savedPerson => {
+          response.json(savedPerson)
+        })
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.use(unknownEndpoint)
