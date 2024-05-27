@@ -7,8 +7,20 @@ const Person = require('./models/person')
 
 app.use(express.static('dist'))
 
-app.use(express.json())
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
 
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+const cors = require('cors')
+
+app.use(cors())
+app.use(express.json())
 app.use(morgan('tiny'))
 
 const unknownEndpoint = (request, response) => {
@@ -86,6 +98,7 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
