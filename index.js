@@ -1,11 +1,10 @@
-require('dotenv').config()
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
-const cors = require('cors')
+require('dotenv').config()
+
 const Person = require('./models/person')
 
-app.use(cors())
 app.use(express.static('dist'))
 
 app.use(express.json())
@@ -40,11 +39,12 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(p => p.id !== id)
-
-  response.status(204).end()
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndDelete(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response) => {
