@@ -1,38 +1,12 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person')
 
 app.use(cors())
 app.use(express.static('dist'))
-
-let persons = [
-  {
-    "id": 1,
-    "name": "Arto Hellas",
-    "number": "040-123456"
-  },
-  {
-    "id": 2,
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523"
-  },
-  {
-    "id": 3,
-    "name": "Dan Abramov",
-    "number": "12-43-234345"
-  },
-  {
-    "id": 4,
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122"
-  },
-  {
-    "id": 5,
-    "name": "Shawn Michaels",
-    "number": "77-77-7777"
-  }
-]
 
 app.use(express.json())
 
@@ -43,7 +17,9 @@ const unknownEndpoint = (request, response) => {
 }
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
 })
 
 app.get('/info', (request, response) => {
@@ -95,13 +71,13 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const nameDuplicated = persons.some(p => p.name === body.name)
+  // const nameDuplicated = persons.some(p => p.name === body.name)
 
-  if (nameDuplicated) {
-    return response.status(409).json({
-      error: 'Name must be unique'
-    })
-  }
+  // if (nameDuplicated) {
+  //   return response.status(409).json({
+  //     error: 'Name must be unique'
+  //   })
+  // }
 
   const person = {
     id: generateId(),
