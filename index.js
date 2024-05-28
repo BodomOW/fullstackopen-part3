@@ -90,11 +90,25 @@ app.post('/api/persons', (request, response, next) => {
     })
   }
   if (body.name.length < 3) {
-    return response.status(400).json({ error: 'Name must be at least 3 characters long' })
+    return response.status(422).json({
+      error: 'Name must be at least 3 characters long'
+    })
   }
   if (body.name && !body.number) {
     return response.status(400).json({
       error: 'Number missing'
+    })
+  }
+  if (body.number.length < 8) {
+    return response.status(422).json({
+      error: 'Number must contain at least 8 digits'
+    })
+  }
+  const regex = /^\d{2,3}-\d+$/
+  console.log(regex.test(body.number))
+  if (regex.test(body.number) === false) {
+    return response.status(422).json({
+      error: `${body.number} is not in the correct format`
     })
   }
 
