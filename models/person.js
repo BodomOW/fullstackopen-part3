@@ -20,11 +20,11 @@ mongoose.connect(url)
 const personSchema = new mongoose.Schema({
   name: {
     type: String,
-    minLength: 3,
+    minLength: [3, 'Must be at least 3 characters long, got {VALUE}'],
   },
   number: {
     type: String,
-    minLength: 8,
+    minLength: [8, 'Must contain at least 8 digits, got {VALUE}'],
     validate: {
       validator: function (v) {
         return /^\d{2,3}-\d+$/.test(v);
