@@ -47,7 +47,7 @@ app.get('/api/persons/:id', (request, response, next) => {
     if (person) {
       response.json(person)
     } else {
-      response.statusMessage = "Person not found"
+      response.statusMessage = 'Person not found'
       response.status(404).end()
     }
   })
@@ -56,6 +56,19 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.put('/api/persons/:id', (request, response, next) => {
   const { name, number } = request.body
+
+  // if (number.length < 8) {
+  //   return response.status(422).json({
+  //     error: 'Number must contain at least 8 digits'
+  //   })
+  // }
+  // const regex = /^\d{2,3}-\d+$/
+  // console.log(regex.test(number))
+  // if (regex.test(number) === false) {
+  //   return response.status(422).json({
+  //     error: `${number} is not in the correct format`
+  //   })
+  // }
 
   Person.findByIdAndUpdate(
     request.params.id,
@@ -70,7 +83,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))

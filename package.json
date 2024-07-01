@@ -7,6 +7,7 @@
         "start": "node index.js",
         "dev": "nodemon index.js",
         "test": "echo \"Error: no test specified\" && exit 1",
+        "lint": "eslint .",
         "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../fullstackopen/part2/phonebook && npm run build && @powershell Copy-Item dist -Recurse ../../../fullstackopen-part3",
         "deploy": "fly deploy",
         "deploy:full": "npm run build:ui && npm run deploy",
@@ -30,7 +31,11 @@
         "morgan": "^1.10.0"
     },
     "devDependencies": {
+        "@eslint/js": "^9.6.0",
         "@flydotio/dockerfile": "^0.5.7",
+        "@stylistic/eslint-plugin-js": "^2.3.0",
+        "eslint": "^9.6.0",
+        "globals": "^15.7.0",
         "nodemon": "^3.1.0"
     }
 }
